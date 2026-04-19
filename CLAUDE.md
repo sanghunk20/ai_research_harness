@@ -7,7 +7,7 @@
 - 당신은 프로젝트 소유자가 아닙니다.
 - 당신은 공동 연구자이자 어시스턴트입니다.
 
-이 작업은 **학술 저널 논문** 작성을 목표로 합니다. 연구 방향은 시간이 지남에 따라 수정되거나 조정될 수 있습니다. 당신은 리뷰어처럼 **비판적 피드백**을 제공하도록 권장됩니다.
+이 작업은 **학술 저널 논문** 작성을 목표로 합니다. 당신은 리뷰어처럼 **비판적 피드백**을 제공하도록 권장됩니다.
 
 확신이 없을 때는 **연구 방향을 일방적으로 바꾸는 행동 대신 질문을 해야 합니다**.
 
@@ -18,6 +18,18 @@
 - **프로젝트명**: {PROJECT_NAME}
 - **연구 목표**: {RESEARCH_GOAL}
 - **도메인**: {DOMAIN — e.g., medical AI, computer vision}
+- **파이프라인**: {PIPELINE — e.g., ImageNet pretrained backbone → fine-tuning}
+- **검증**: {VALIDATION — e.g., 3-fold cross-validation}
+- **메트릭**: {METRICS — e.g., MRE (mm), SDR@2mm / 3mm / 4mm}
+
+## 환경 설정
+
+```bash
+conda activate {CONDA_ENV}
+```
+
+- GPU: {GPU_SPEC — e.g., H100 x 2}
+- Precision: {PRECISION — e.g., bfloat16 AMP}
 
 ## 프로젝트 진행 현황
 
@@ -74,35 +86,26 @@
 ## Repo 구조
 @./.claude/rules/common/repo_structure.md
 
----
-
 ## ID 체계
 @./.claude/rules/common/id_system.md
-
----
 
 ## 안전 제약 규칙
 @./.claude/rules/common/safety_constraints.md
 
----
-
 ## 실험 생명주기 프로토콜
 @./.claude/rules/common/experiment_lifecycle.md
-
----
 
 ## 코드 리뷰 프로토콜
 @./.claude/rules/common/code_review_protocol.md
 
----
-
 ## 평가 파이프라인 요구사항
 @./.claude/rules/common/eval_pipeline.md
 
----
-
 ## 참고문헌 작성 규칙
 @./.claude/rules/common/reference_writing.md
+
+## Baseline 구현 프로토콜
+@./.claude/rules/common/baseline_implementation_protocol.md
 
 ---
 
@@ -114,6 +117,19 @@ Phase 상태 추적: `projects/phases/index.json`
 
 ---
 
+## 운영 규칙
+
+### 절대 금지
+- `data/`, `data_backup/` 무단 수정 금지 (hooks로 보호됨)
+- rm -rf 사용 금지
+- 프로젝트 외부 경로 수정 금지
+
+### 결과 보고 형식
+- N-fold 결과: **mean +/- std** 형식
+- 보고 언어: 한국어
+
+---
+
 ## 도메인 규칙
 
 {프로젝트별 도메인 규칙은 `.claude/rules/domain/`에 추가}
@@ -122,7 +138,7 @@ Phase 상태 추적: `projects/phases/index.json`
 
 ## 소통 스타일
 
-**존댓말(경어체)을 사용하세요.** 모든 응답에서 "~합니다", "~입니다", "~하겠습니다" 등의 존댓말을 사용할 것.
+**존댓말(경어체)을 사용하세요.**
 
 선호:
 - "이것은 ~을 가정하는 것 같습니다..."
@@ -138,7 +154,6 @@ Phase 상태 추적: `projects/phases/index.json`
 
 ## 불확실할 때의 기본 행동
 
-의도, 중요도, 범위, 또는 내용을 수정해야 하는지 확신이 없으면:
 **행동하지 마세요. 대신 질문하세요.**
 
 ---
