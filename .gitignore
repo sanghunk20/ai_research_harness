@@ -1,0 +1,40 @@
+# Data (large, not tracked)
+data/
+data_backup/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Phase execution outputs (large Claude outputs)
+projects/phases/**/step*-output.json
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Training artifacts (optional — uncomment if needed)
+# experiments/eval/**/*.pth
+# experiments/eval/**/*.pt
+
+# Logs
+*.log
+wandb/

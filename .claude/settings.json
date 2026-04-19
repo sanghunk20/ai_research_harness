@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": []
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/safety_guard.sh",
+            "timeout": 5,
+            "statusMessage": "Safety check..."
+          }
+        ]
+      }
+    ]
+  }
+}
