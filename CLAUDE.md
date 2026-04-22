@@ -107,6 +107,9 @@ conda activate {CONDA_ENV}
 ## Baseline 구현 프로토콜
 @./.claude/rules/common/baseline_implementation_protocol.md
 
+## Reproducibility 규칙
+@./.claude/rules/common/reproducibility.md
+
 ---
 
 ## 하네스 실행 엔진

@@ -1,0 +1,91 @@
+# Training Config Template
+# 복사: src/configs/<exp_name>.yaml
+# 로드: OmegaConf, hydra, 또는 yaml.safe_load 사용
+
+experiment:
+  name: "exp_baseline_fold0"       # 실험 ID — checkpoint/로그 경로에 사용
+  phase: "phase-baseline"           # 연결된 phase dir
+  rq: "RQ-001"                      # 관련 RQ (선택)
+  seed: 42
+
+task:
+  type: "classification"            # classification | detection | segmentation | landmark | pose | generation
+  num_classes: 1000                 # task-specific
+  # detection: num_classes, num_queries
+  # segmentation: num_classes (배경 포함 여부 명시)
+  # landmark: num_landmarks
+  # generation: image_size, latent_dim
+
+data:
+  dataset: "imagenet"
+  root: "data/imagenet"
+  split_file: null                  # "data/splits/fold0.json" 같은 명시적 split 경로
+  image_size: 224
+  channels: 3
+  num_workers: 4
+  augmentation:
+    train:
+      - {name: "resize", size: [224, 224]}
+      - {name: "random_horizontal_flip", p: 0.5}
+      - {name: "color_jitter", brightness: 0.4, contrast: 0.4, saturation: 0.4}
+      - {name: "normalize", mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225]}
+    val:
+      - {name: "resize", size: [256, 256]}
+      - {name: "center_crop", size: [224, 224]}
+      - {name: "normalize", mean: [0.485, 0.456, 0.406], std: [0.229, 0.224, 0.225]}
+
+model:
+  backbone: "resnet50"              # 또는 vit_b_16, swin_t, convnext_t 등
+  pretrained: "imagenet"            # imagenet | dino | sam | none | path/to/weights.pth
+  head:
+    type: "linear"                  # task-specific head 설정
+    hidden_dim: 512
+    dropout: 0.1
+
+train:
+  epochs: 100
+  batch_size: 128
+  grad_accum_steps: 1
+  precision: "bf16"                 # fp32 | fp16 | bf16
+  optimizer:
+    name: "adamw"
+    lr: 1.0e-4
+    weight_decay: 0.05
+    betas: [0.9, 0.999]
+  scheduler:
+    name: "cosine"
+    warmup_epochs: 5
+    min_lr: 1.0e-6
+  loss:
+    name: "cross_entropy"
+    label_smoothing: 0.1
+  grad_clip: 1.0
+  ema:
+    enabled: false
+    decay: 0.9999
+
+eval:
+  metrics: ["top1_acc", "top5_acc", "f1_macro"]
+  save_predictions: true            # experiments/eval/<exp_name>/predictions.json
+
+checkpoint:
+  save_dir: "experiments/logs/${experiment.name}"
+  save_best_only: true              # best checkpoint만 유지 (.claude/rules/common/safety_constraints.md 준수)
+  metric: "val/top1_acc"
+  mode: "max"
+  completion_flag: "experiments/logs/${experiment.name}/training_complete.flag"
+
+logging:
+  backend: "tensorboard"            # tensorboard | wandb | none
+  log_every_n_steps: 50
+  val_every_n_epochs: 1
+  # wandb:
+  #   project: "my_vision_project"
+  #   entity: "my_team"
+
+dry_run:
+  # dry-run 모드에서 덮어쓰이는 값들 — execute.py의 code step에서 --dry-run 전달 시
+  epochs: 1
+  batch_size: 4
+  num_workers: 0
+  skip_completion_flag: true        # training_complete.flag를 생성하지 않음
